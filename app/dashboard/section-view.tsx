@@ -80,8 +80,8 @@ function ChannelsView({ workspace, userId, onSaved }: { workspace: WorkspaceData
     setError("");
     setNotice("");
     if (!userId) return;
-    if (!process.env.NEXT_PUBLIC_META_APP_ID || !process.env.META_CONFIG_ID) {
-      setError("Meta Embedded Signup is not configured yet. Add NEXT_PUBLIC_META_APP_ID and META_CONFIG_ID, then restart the dev server.");
+    if (!process.env.NEXT_PUBLIC_META_APP_ID || !process.env.NEXT_PUBLIC_META_CONFIG_ID) {
+      setError("Meta Embedded Signup is not configured yet. Add NEXT_PUBLIC_META_APP_ID and the separate NEXT_PUBLIC_META_CONFIG_ID from Facebook Login for Business, then restart the dev server.");
       return;
     }
     if (!window.FB) {
@@ -113,7 +113,7 @@ function ChannelsView({ workspace, userId, onSaved }: { workspace: WorkspaceData
       } finally {
         setIsConnecting(false);
       }
-    }, { config_id: process.env.META_CONFIG_ID, response_type: "code", override_default_response_type: true, scope: "whatsapp_business_management,whatsapp_business_messaging,business_management" });
+    }, { config_id: process.env.NEXT_PUBLIC_META_CONFIG_ID, response_type: "code", override_default_response_type: true, scope: "whatsapp_business_management,whatsapp_business_messaging,business_management" });
   }
 
   return <PageFrame title="Channels" description="Connect the channels where customers already reach your business."><div className="grid gap-6 lg:grid-cols-2"><div className="border border-zinc-200 bg-white p-6"><div className="flex items-center justify-between"><h2 className="text-lg font-semibold">WhatsApp Business</h2><span className="text-xs font-medium text-zinc-500">{connected?.status ?? "Not connected"}</span></div><p className="mt-3 text-sm leading-6 text-zinc-500">Connect through Meta. You will choose the business and phone number in Meta&apos;s secure signup flow, so no account ID needs to be copied here.</p><button type="button" onClick={connectWhatsApp} disabled={isConnecting} className="mt-6 bg-zinc-950 px-5 py-3 text-sm font-semibold text-white disabled:opacity-60">{isConnecting ? "Connecting to Meta..." : connected ? "Reconnect WhatsApp" : "Connect with Meta"}</button>{notice && <p className="mt-4 text-sm text-green-700">{notice}</p>}{error && <p className="mt-4 text-sm text-red-600">{error}</p>}</div><div className="border border-dashed border-zinc-300 bg-white p-6"><h2 className="text-lg font-semibold">Connection requirements</h2><ul className="mt-3 space-y-2 text-sm leading-6 text-zinc-500"><li>Use a WhatsApp Business number.</li><li>Have access to the Meta Business account.</li><li>Complete Meta webhook verification after signup.</li></ul></div></div></PageFrame>;
