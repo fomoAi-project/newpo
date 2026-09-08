@@ -55,7 +55,7 @@ The Channels page uses Meta Embedded Signup, so users do not need to copy a WABA
 
 ```env
 NEXT_PUBLIC_META_APP_ID=your_meta_app_id
-NEXT_PUBLIC_META_CONFIG_ID=your_embedded_signup_config_id
+META_CONFIG_ID=your_embedded_signup_config_id
 META_APP_SECRET=your_meta_app_secret
 META_REDIRECT_URI=http://localhost:3000/dashboard/channels
 ```
