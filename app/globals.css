@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #09090b;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* Keep the existing Tailwind structure, but give every screen one monochrome visual language. */
+.bg-slate-950, .bg-slate-950\/60, .bg-slate-950\/80 { background-color: #ffffff !important; }
+.bg-slate-900, .bg-slate-900\/60, .bg-slate-900\/70, .bg-slate-900\/80 { background-color: #f4f4f5 !important; }
+.bg-slate-800 { background-color: #e4e4e7 !important; }
+.bg-white\/5 { background-color: #f4f4f5 !important; }
+.border-white\/10, .border-white\/15 { border-color: #d4d4d8 !important; }
+.text-white, .text-slate-50, .text-slate-200 { color: #09090b !important; }
+.text-slate-300, .text-slate-400 { color: #52525b !important; }
+.text-slate-950 { color: #ffffff !important; }
+.bg-emerald-500 { background-color: #09090b !important; }
+.bg-emerald-500\/10, .bg-emerald-500\/15 { background-color: #e4e4e7 !important; }
+.text-emerald-300, .text-emerald-200 { color: #18181b !important; }
+.border-emerald-400, .border-emerald-400\/30, .border-emerald-500\/20 { border-color: #a1a1aa !important; }
+.bg-amber-400 { background-color: #71717a !important; }
+.bg-rose-500\/15 { background-color: #e4e4e7 !important; }
+.text-rose-300, .text-amber-300 { color: #3f3f46 !important; }
+.shadow-emerald-950\/30, .shadow-emerald-950\/20, .shadow-emerald-900\/30 { --tw-shadow-color: #d4d4d8 !important; }
+.workspace-nav-active { color: #ffffff !important; }
+.training-owner-message, .training-send-button { color: #ffffff !important; }
