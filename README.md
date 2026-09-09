@@ -57,7 +57,7 @@ The Channels page uses Meta Embedded Signup, so users do not need to copy a WABA
 NEXT_PUBLIC_META_APP_ID=your_meta_app_id
 NEXT_PUBLIC_META_CONFIG_ID=your_embedded_signup_config_id
 META_APP_SECRET=your_meta_app_secret
-META_REDIRECT_URI=http://localhost:3000/dashboard/channels
+META_REDIRECT_URI=https://localhost:3000/dashboard/channels
 ```
 
 The Meta app must have WhatsApp configured, Embedded Signup enabled, and the local callback URL allowed. `META_APP_SECRET` remains server-only. Restart Next.js after adding the values, then use **Channels -> Connect with Meta**.
