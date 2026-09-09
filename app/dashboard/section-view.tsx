@@ -9,7 +9,7 @@ declare global {
   interface Window {
     FB?: {
       init: (options: Record<string, unknown>) => void;
-      login: (callback: (response: { authResponse?: { code?: string } }) => void, options: Record<string, unknown>) => void;
+      login: (callback: (response: { authResponse?: { code?: string }; status?: string; error?: { message?: string; code?: number } }) => void, options: Record<string, unknown>) => void;
     };
   }
 }
@@ -96,7 +96,8 @@ function ChannelsView({ workspace, userId, onSaved }: { workspace: WorkspaceData
     window.FB.login(async (response) => {
       const code = response.authResponse?.code;
       if (!code) {
-        setError("Meta signup was cancelled or did not return a code.");
+        const metaError = response.error?.message;
+        setError(metaError ? `Meta signup failed: ${metaError}` : `Meta signup was ${response.status === "unknown" ? "not completed" : "cancelled or did not return a code"}. Check the Meta app configuration and try again.`);
         setIsConnecting(false);
         return;
       }
