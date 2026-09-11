@@ -1,5 +1,5 @@
 import { get, ref, set } from "firebase/database";
-import { database } from "@/lib/firebase";
+import { getFirebaseDatabase } from "@/lib/firebase";
 
 export type WorkspaceLead = {
   id: string;
@@ -57,12 +57,12 @@ export const emptyWorkspace: WorkspaceData = {
 };
 
 export async function getWorkspaceData(userId: string): Promise<WorkspaceData> {
-  const snapshot = await get(ref(database, `workspaces/${userId}`));
+  const snapshot = await get(ref(getFirebaseDatabase(), `workspaces/${userId}`));
   return snapshot.exists() ? ({ ...emptyWorkspace, ...snapshot.val() } as WorkspaceData) : emptyWorkspace;
 }
 
 export async function saveWorkspaceData(userId: string, data: WorkspaceData) {
-  await set(ref(database, `workspaces/${userId}`), data);
+  await set(ref(getFirebaseDatabase(), `workspaces/${userId}`), data);
 }
 
 export async function addKnowledgeEntry(userId: string, content: string) {

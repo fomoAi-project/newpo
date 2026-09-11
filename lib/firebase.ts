@@ -12,7 +12,20 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-const app = getApps().length > 0 ? getApps()[0] : initializeApp(firebaseConfig);
+const hasFirebaseConfig = Object.values(firebaseConfig).every(Boolean);
 
-export const auth = getAuth(app);
-export const database = getDatabase(app);
+function getFirebaseApp() {
+  if (!hasFirebaseConfig) {
+    throw new Error("Firebase is not configured. Add the NEXT_PUBLIC_FIREBASE_* environment variables.");
+  }
+
+  return getApps().length > 0 ? getApps()[0] : initializeApp(firebaseConfig);
+}
+
+export function getFirebaseAuth() {
+  return getAuth(getFirebaseApp());
+}
+
+export function getFirebaseDatabase() {
+  return getDatabase(getFirebaseApp());
+}

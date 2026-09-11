@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { getFirebaseAuth } from "@/lib/firebase";
 
 const navigation = [
   { label: "Overview", href: "/dashboard" },
@@ -26,7 +26,7 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   async function handleSignOut() {
-    await signOut(auth);
+    await signOut(getFirebaseAuth());
     router.replace("/login");
   }
 
