@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #09090b;
+  --background: #f4f4f1;
+  --foreground: #171717;
+  --line: #deded8;
+  --muted: #73736d;
+  --ink: #171717;
 }
 
 @theme inline {
@@ -27,22 +30,74 @@ a {
   text-decoration: none;
 }
 
-/* Keep the existing Tailwind structure, but give every screen one monochrome visual language. */
-.bg-slate-950, .bg-slate-950\/60, .bg-slate-950\/80 { background-color: #ffffff !important; }
-.bg-slate-900, .bg-slate-900\/60, .bg-slate-900\/70, .bg-slate-900\/80 { background-color: #f4f4f5 !important; }
-.bg-slate-800 { background-color: #e4e4e7 !important; }
-.bg-white\/5 { background-color: #f4f4f5 !important; }
-.border-white\/10, .border-white\/15 { border-color: #d4d4d8 !important; }
-.text-white, .text-slate-50, .text-slate-200 { color: #09090b !important; }
-.text-slate-300, .text-slate-400 { color: #52525b !important; }
-.text-slate-950 { color: #ffffff !important; }
-.bg-emerald-500 { background-color: #09090b !important; }
-.bg-emerald-500\/10, .bg-emerald-500\/15 { background-color: #e4e4e7 !important; }
-.text-emerald-300, .text-emerald-200 { color: #18181b !important; }
-.border-emerald-400, .border-emerald-400\/30, .border-emerald-500\/20 { border-color: #a1a1aa !important; }
-.bg-amber-400 { background-color: #71717a !important; }
-.bg-rose-500\/15 { background-color: #e4e4e7 !important; }
-.text-rose-300, .text-amber-300 { color: #3f3f46 !important; }
-.shadow-emerald-950\/30, .shadow-emerald-950\/20, .shadow-emerald-900\/30 { --tw-shadow-color: #d4d4d8 !important; }
-.workspace-nav-active { color: #ffffff !important; }
-.training-owner-message, .training-send-button { color: #ffffff !important; }
+::selection {
+  background: #171717;
+  color: #ffffff;
+}
+
+button, input, textarea {
+  font: inherit;
+}
+
+.workspace-shell {
+  background: var(--background);
+}
+
+.workspace-sidebar {
+  background: #1c1c1a;
+  color: #f5f5f0;
+}
+
+.workspace-sidebar a {
+  color: #aaa9a1;
+}
+
+.workspace-sidebar a:hover {
+  color: #ffffff;
+  background: #2b2b28;
+}
+
+.workspace-sidebar .workspace-nav-active {
+  color: #1c1c1a !important;
+  background: #f5f5f0;
+}
+
+.workspace-main {
+  background-color: var(--background);
+  background-image: linear-gradient(#e8e8e2 1px, transparent 1px), linear-gradient(90deg, #e8e8e2 1px, transparent 1px);
+  background-size: 36px 36px;
+  background-position: -1px -1px;
+}
+
+.workspace-content {
+  background: rgba(244, 244, 241, 0.9);
+  backdrop-filter: blur(8px);
+}
+
+.workspace-panel {
+  border: 1px solid var(--line);
+  background: #ffffff;
+  box-shadow: 0 14px 34px rgba(24, 24, 22, 0.05);
+}
+
+.workspace-content .border-zinc-200.bg-white {
+  border-color: var(--line);
+  box-shadow: 0 12px 28px rgba(24, 24, 22, 0.045);
+}
+
+.workspace-content input,
+.workspace-content textarea {
+  background: #fbfbf9;
+  border-color: #d4d4ce;
+}
+
+.workspace-content input:focus,
+.workspace-content textarea:focus {
+  border-color: #171717;
+  box-shadow: 0 0 0 3px rgba(23, 23, 23, 0.08);
+}
+
+.workspace-kicker {
+  color: var(--muted);
+  letter-spacing: 0.16em;
+}

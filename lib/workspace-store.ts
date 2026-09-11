@@ -14,7 +14,9 @@ export type WorkspaceConversation = {
   name: string;
   channel: string;
   note: string;
-  status: "AI handling" | "Needs owner" | "Human required";
+  messageType?: "business" | "normal";
+  aiReply?: string;
+  status: "AI handling" | "AI handled" | "Needs owner" | "Human required";
 };
 
 export type WorkspaceKnowledge = {

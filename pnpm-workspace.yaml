@@ -1,0 +1,5 @@
+allowBuilds:
+  '@firebase/util': true
+  '@whiskeysockets/baileys': true
+  protobufjs: true
+  unrs-resolver: true

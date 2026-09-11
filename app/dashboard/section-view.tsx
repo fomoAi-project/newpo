@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import type { BusinessSession } from "@/lib/browser-session";
 import { getBusinessProfile, saveBusinessProfile, useFirebaseUser } from "@/lib/firebase-auth";
 import { emptyWorkspace, getWorkspaceData, saveWorkspaceData, type WorkspaceData } from "@/lib/workspace-store";
@@ -47,7 +48,7 @@ export function SectionView({ section }: { section: string }) {
 }
 
 function PageFrame({ title, description, children }: { title: string; description: string; children: React.ReactNode }) {
-  return <main className="min-h-screen bg-zinc-100 px-5 py-8 text-zinc-950 sm:px-8 lg:py-10"><div className="mx-auto max-w-5xl"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">Workspace</p><h1 className="mt-3 text-4xl font-semibold tracking-tight">{title}</h1><p className="mt-3 max-w-2xl text-zinc-500">{description}</p><div className="mt-8">{children}</div></div></main>;
+  return <main className="min-h-screen px-5 py-7 text-zinc-950 sm:px-8 lg:px-12 lg:py-10"><div className="mx-auto max-w-6xl"><div className="flex items-center justify-between border-b border-zinc-300 pb-5"><div><p className="workspace-kicker text-[10px] font-bold uppercase">AIBiz / Workspace</p><h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-500">{description}</p></div><div className="hidden items-center gap-2 text-xs text-zinc-500 sm:flex"><span className="h-2 w-2 rounded-full bg-emerald-500" />Live workspace</div></div><div className="mt-8">{children}</div></div></main>;
 }
 
 function SettingsView({ business, userId, onSaved }: { business: BusinessSession | null; userId?: string; onSaved: (value: BusinessSession) => void }) {
@@ -62,90 +63,118 @@ function ChannelsView({ workspace, userId, onSaved }: { workspace: WorkspaceData
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [isConnecting, setIsConnecting] = useState(false);
-  const metaMessageHandled = useRef(false);
+  const [qrCode, setQrCode] = useState("");
+  const pollRef = useRef<number | null>(null);
+  const workspaceRef = useRef(workspace);
   const connected = workspace.channels.find((item) => item.type === "whatsapp");
 
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_META_APP_ID || document.getElementById("facebook-jssdk")) return;
-    const script = document.createElement("script");
-    script.id = "facebook-jssdk";
-    script.src = "https://connect.facebook.net/en_US/sdk.js";
-    script.async = true;
-    script.onload = () => {
-      window.FB?.init({ appId: process.env.NEXT_PUBLIC_META_APP_ID, cookie: true, xfbml: false, version: "v23.0" });
-    };
-    document.body.appendChild(script);
+    return () => { if (pollRef.current) window.clearInterval(pollRef.current); };
   }, []);
 
-  useEffect(() => {
-    function handleMetaMessage(event: MessageEvent) {
-      if (!event.origin.endsWith("facebook.com")) return;
-      try {
-        const message = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
-        if (message?.type !== "WA_EMBEDDED_SIGNUP") return;
-        if (message.event === "CANCEL") {
-          metaMessageHandled.current = true;
-          const detail = message.data?.error_message ?? message.data?.current_step;
-          setError(detail ? `Meta signup was not completed: ${detail}` : "Meta signup was not completed.");
-        }
-      } catch {
-        // Ignore unrelated postMessage payloads from the SDK.
-      }
-    }
+  async function finishConnection(data: { account?: { name?: string; phoneNumber?: string; jid?: string } }) {
+    if (!userId || !data.account) return;
+    const next = { ...workspace, channels: [...workspace.channels.filter((item) => item.type !== "whatsapp"), { id: `whatsapp-${Date.now()}`, type: "whatsapp" as const, name: data.account.name ?? "WhatsApp", phoneNumber: data.account.phoneNumber, businessAccountId: data.account.jid, status: "connected" as const }] };
+    await saveWorkspaceData(userId, next);
+    onSaved(next);
+    setNotice("WhatsApp connected. Your account is ready to receive messages.");
+    setQrCode("");
+    setIsConnecting(false);
+  }
 
-    window.addEventListener("message", handleMetaMessage);
-    return () => window.removeEventListener("message", handleMetaMessage);
-  }, []);
+  async function saveIncomingMessages(messages: Array<{ id: string; sender: string; body: string; messageType: "business" | "normal" }>) {
+    if (!userId || messages.length === 0) return;
+    const current = workspaceRef.current;
+    const freshMessages = messages.filter((message) => !current.conversations.some((conversation) => conversation.id === `whatsapp-${message.id}`));
+    if (freshMessages.length === 0) return;
+    const next = { ...current, conversations: [...current.conversations, ...freshMessages.map((message) => ({ id: `whatsapp-${message.id}`, name: message.sender, channel: "WhatsApp", note: message.body, messageType: message.messageType, status: message.messageType === "business" ? "AI handling" as const : "Needs owner" as const }))] };
+    await saveWorkspaceData(userId, next);
+    workspaceRef.current = next;
+    onSaved(next);
+  }
 
-  function connectWhatsApp() {
+  async function connectWhatsApp() {
     setError("");
     setNotice("");
     if (!userId) return;
-    if (!process.env.NEXT_PUBLIC_META_APP_ID || !process.env.NEXT_PUBLIC_META_CONFIG_ID) {
-      setError("Meta Embedded Signup is not configured yet. Add NEXT_PUBLIC_META_APP_ID and the separate NEXT_PUBLIC_META_CONFIG_ID from Facebook Login for Business, then restart the dev server.");
-      return;
-    }
-    if (!window.FB) {
-      setError("Meta login is still loading. Try again in a moment.");
-      return;
-    }
-    if (window.location.protocol !== "https:") {
-      setError("Meta requires HTTPS for Embedded Signup. Start the app with npm run dev:https or open it through an HTTPS tunnel, then try again.");
-      return;
-    }
     setIsConnecting(true);
-    metaMessageHandled.current = false;
-    window.FB.login(async (response) => {
-      const code = response.authResponse?.code;
-      if (!code) {
-        const metaError = response.error?.message;
-        if (!metaMessageHandled.current) setError(metaError ? `Meta signup failed: ${metaError}` : `Meta signup was ${response.status === "unknown" ? "not completed" : "cancelled or did not return a code"}. Check the Meta app configuration and try again.`);
-        setIsConnecting(false);
-        return;
-      }
-      try {
-        const result = await fetch("/api/whatsapp/connect", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code }) });
-        const data = await result.json();
-        if (!result.ok) throw new Error(data.error ?? "WhatsApp could not be connected.");
-        const next = { ...workspace, channels: [...workspace.channels.filter((item) => item.type !== "whatsapp"), { id: `whatsapp-${Date.now()}`, type: "whatsapp" as const, name: data.account.accountName, phoneNumber: data.account.phoneNumber, businessAccountId: data.account.businessAccountId, status: "connected" as const }] };
-        await saveWorkspaceData(userId, next);
-        onSaved(next);
-        setNotice("WhatsApp Business connected through Meta.");
-      } catch (connectionError) {
-        setError(connectionError instanceof Error ? connectionError.message : "WhatsApp could not be connected.");
-      } finally {
-        setIsConnecting(false);
-      }
-    }, { config_id: process.env.NEXT_PUBLIC_META_CONFIG_ID, response_type: "code", override_default_response_type: true, extras: { setup: {} } });
+    setQrCode("");
+    try {
+      const clearedWorkspace = { ...workspace, channels: workspace.channels.filter((item) => item.type !== "whatsapp") };
+      await saveWorkspaceData(userId, clearedWorkspace);
+      onSaved(clearedWorkspace);
+      const result = await fetch("/api/whatsapp/connect", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ reset: true, knowledge: workspace.knowledge.map((item) => item.content) }) });
+      const data = await result.json();
+      if (!result.ok) throw new Error(data.error ?? "WhatsApp could not be started.");
+      await saveIncomingMessages(data.messages ?? []);
+      setQrCode(data.qr ?? "");
+      if (data.status === "connected") { await finishConnection(data); return; }
+      pollRef.current = window.setInterval(async () => {
+        const statusResult = await fetch("/api/whatsapp/connect");
+        const status = await statusResult.json();
+        await saveIncomingMessages(status.messages ?? []);
+        if (status.qr) setQrCode(status.qr);
+        if (status.status === "connected") {
+          if (pollRef.current) window.clearInterval(pollRef.current);
+          await finishConnection(status);
+        } else if (status.status === "error" || status.status === "disconnected") {
+          if (pollRef.current) window.clearInterval(pollRef.current);
+          setError(status.error ?? "WhatsApp could not be connected.");
+          setIsConnecting(false);
+        }
+      }, 1500);
+    } catch (connectionError) {
+      setError(connectionError instanceof Error ? connectionError.message : "WhatsApp could not be connected.");
+      setIsConnecting(false);
+    }
   }
 
-  return <PageFrame title="Channels" description="Connect the channels where customers already reach your business."><div className="grid gap-6 lg:grid-cols-2"><div className="border border-zinc-200 bg-white p-6"><div className="flex items-center justify-between"><h2 className="text-lg font-semibold">WhatsApp Business</h2><span className="text-xs font-medium text-zinc-500">{connected?.status ?? "Not connected"}</span></div><p className="mt-3 text-sm leading-6 text-zinc-500">Connect through Meta. You will choose the business and phone number in Meta&apos;s secure signup flow, so no account ID needs to be copied here.</p><button type="button" onClick={connectWhatsApp} disabled={isConnecting} className="mt-6 bg-zinc-950 px-5 py-3 text-sm font-semibold text-white disabled:opacity-60">{isConnecting ? "Connecting to Meta..." : connected ? "Reconnect WhatsApp" : "Connect with Meta"}</button>{notice && <p className="mt-4 text-sm text-green-700">{notice}</p>}{error && <p className="mt-4 text-sm text-red-600">{error}</p>}</div><div className="border border-dashed border-zinc-300 bg-white p-6"><h2 className="text-lg font-semibold">Connection requirements</h2><ul className="mt-3 space-y-2 text-sm leading-6 text-zinc-500"><li>Use a WhatsApp Business number.</li><li>Have access to the Meta Business account.</li><li>Complete Meta webhook verification after signup.</li></ul></div></div></PageFrame>;
+  return <PageFrame title="Channels" description="Connect the channels where customers already reach your business."><div className="grid gap-6 lg:grid-cols-2"><div className="border border-zinc-200 bg-white p-6"><div className="flex items-center justify-between"><h2 className="text-lg font-semibold">WhatsApp</h2><span className="text-xs font-medium text-zinc-500">{connected?.status ?? "Not connected"}</span></div><p className="mt-3 text-sm leading-6 text-zinc-500">Scan the QR code with WhatsApp on your phone. This uses a direct WhatsApp Web connection and does not require Meta Business setup.</p>{qrCode && <div className="mt-6 flex flex-col items-center border border-zinc-200 p-4"><Image src={qrCode} alt="Scan this QR code with WhatsApp" width={256} height={256} unoptimized /><p className="mt-3 text-center text-xs text-zinc-500">Open WhatsApp on your phone, then choose Linked devices and Link a device.</p></div>}<button type="button" onClick={connectWhatsApp} disabled={isConnecting} className="mt-6 bg-zinc-950 px-5 py-3 text-sm font-semibold text-white disabled:opacity-60">{isConnecting ? "Waiting for phone..." : connected ? "Reconnect WhatsApp" : "Connect WhatsApp"}</button>{notice && <p className="mt-4 text-sm text-green-700">{notice}</p>}{error && <p className="mt-4 text-sm text-red-600">{error}</p>}</div><div className="border border-dashed border-zinc-300 bg-white p-6"><h2 className="text-lg font-semibold">Connection requirements</h2><ul className="mt-3 space-y-2 text-sm leading-6 text-zinc-500"><li>Keep the phone with WhatsApp available while linking.</li><li>Use WhatsApp or WhatsApp Business on the phone.</li><li>The server must keep its local WhatsApp session directory.</li></ul></div></div></PageFrame>;
 }
 
 function InboxView({ workspace, userId, onSaved }: { workspace: WorkspaceData; userId?: string; onSaved: (value: WorkspaceData) => void }) {
   const [name, setName] = useState(""); const [note, setNote] = useState("");
+  const workspaceRef = useRef(workspace);
+  useEffect(() => { workspaceRef.current = workspace; }, [workspace]);
+  useEffect(() => {
+    if (!userId) return;
+    let syncing = false;
+      const sync = async () => {
+      if (syncing) return;
+      syncing = true;
+      try {
+        const result = await fetch("/api/whatsapp/connect", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ knowledge: workspaceRef.current.knowledge.map((item) => item.content) }) });
+        if (!result.ok) return;
+        const data = await result.json();
+        const messages = Array.isArray(data.messages) ? data.messages : [];
+        if (messages.length === 0) return;
+        const current = workspaceRef.current;
+        const nextConversations = [...current.conversations];
+        for (const message of messages as Array<{ id: string; sender: string; body: string; messageType: "business" | "normal"; aiReply?: string; replySent?: boolean }>) {
+          const id = `whatsapp-${message.id}`;
+          const index = nextConversations.findIndex((conversation) => conversation.id === id);
+          const conversation = { id, name: message.sender, channel: "WhatsApp", note: message.body, messageType: message.messageType, aiReply: message.aiReply, status: "AI handled" as const };
+          if (index === -1) nextConversations.push(conversation);
+          else if (message.aiReply && nextConversations[index].aiReply !== message.aiReply) nextConversations[index] = { ...nextConversations[index], aiReply: message.aiReply };
+        }
+        if (nextConversations.length === current.conversations.length && nextConversations.every((conversation, index) => conversation === current.conversations[index])) return;
+        const next = { ...current, conversations: nextConversations };
+        workspaceRef.current = next;
+        await saveWorkspaceData(userId, next);
+        onSaved(next);
+      } catch {
+        // The dev server or WhatsApp session can restart between polls.
+      } finally {
+        syncing = false;
+      }
+      };
+      void sync();
+      const poll = window.setInterval(() => void sync(), 1500);
+    return () => window.clearInterval(poll);
+  }, [userId, onSaved]);
+    return <PageFrame title="Inbox" description="Your AI assistant is responding to all incoming messages. Review responses and the conversations they're handling."><form onSubmit={submit} className="mb-6 grid gap-3 border border-zinc-200 bg-white p-5 sm:grid-cols-[0.4fr,1fr,auto]"><input required value={name} onChange={(event) => setName(event.target.value)} placeholder="Customer name" className="border border-zinc-300 px-3 py-3" /><input required value={note} onChange={(event) => setNote(event.target.value)} placeholder="What do they need help with?" className="border border-zinc-300 px-3 py-3" /><button className="bg-zinc-950 px-4 py-3 text-sm font-semibold text-white">Add conversation</button></form><div className="space-y-3">{workspace.conversations.length === 0 ? <Empty title="No conversations yet" text="Connect WhatsApp or add a conversation to start working here." /> : workspace.conversations.map((item) => <div key={item.id} className="border border-zinc-200 bg-white p-5"><div className="flex justify-between gap-4"><div><p className="font-semibold">{item.name}</p><p className="mt-1 text-sm text-zinc-500">{item.channel} · {item.note}</p></div><div className="text-right"><span className="text-xs text-zinc-500">{item.status}</span>{item.messageType && <p className={`mt-1 text-xs font-semibold ${item.messageType === "business" ? "text-green-700" : "text-zinc-400"}`}>{item.messageType === "business" ? "Business inquiry" : "Normal message"}</p>}</div></div>{item.aiReply && <div className="mt-4 border-l-2 border-zinc-900 bg-zinc-50 px-4 py-3 text-sm text-zinc-700"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-500">AI reply sent</p><p className="mt-1">{item.aiReply}</p></div>}</div>)}</div></PageFrame>;
   async function submit(event: FormEvent) { event.preventDefault(); if (!userId || !name || !note) return; const next = { ...workspace, conversations: [...workspace.conversations, { id: `${Date.now()}`, name, channel: "Manual", note, status: "Needs owner" as const }] }; await saveWorkspaceData(userId, next); onSaved(next); setName(""); setNote(""); }
-  return <PageFrame title="Inbox" description="Review conversations from connected channels and take over when a human is needed."><form onSubmit={submit} className="mb-6 grid gap-3 border border-zinc-200 bg-white p-5 sm:grid-cols-[0.4fr,1fr,auto]"><input required value={name} onChange={(event) => setName(event.target.value)} placeholder="Customer name" className="border border-zinc-300 px-3 py-3" /><input required value={note} onChange={(event) => setNote(event.target.value)} placeholder="What do they need help with?" className="border border-zinc-300 px-3 py-3" /><button className="bg-zinc-950 px-4 py-3 text-sm font-semibold text-white">Add conversation</button></form><div className="space-y-3">{workspace.conversations.length === 0 ? <Empty title="No conversations yet" text="Connect WhatsApp or add a conversation to start working here." /> : workspace.conversations.map((item) => <div key={item.id} className="flex justify-between border border-zinc-200 bg-white p-5"><div><p className="font-semibold">{item.name}</p><p className="mt-1 text-sm text-zinc-500">{item.channel} · {item.note}</p></div><span className="text-xs text-zinc-500">{item.status}</span></div>)}</div></PageFrame>;
+  return <PageFrame title="Inbox" description="Review conversations from connected channels and take over when a human is needed."><form onSubmit={submit} className="mb-6 grid gap-3 border border-zinc-200 bg-white p-5 sm:grid-cols-[0.4fr,1fr,auto]"><input required value={name} onChange={(event) => setName(event.target.value)} placeholder="Customer name" className="border border-zinc-300 px-3 py-3" /><input required value={note} onChange={(event) => setNote(event.target.value)} placeholder="What do they need help with?" className="border border-zinc-300 px-3 py-3" /><button className="bg-zinc-950 px-4 py-3 text-sm font-semibold text-white">Add conversation</button></form><div className="space-y-3">{workspace.conversations.length === 0 ? <Empty title="No conversations yet" text="Connect WhatsApp or add a conversation to start working here." /> : workspace.conversations.map((item) => <div key={item.id} className="flex justify-between border border-zinc-200 bg-white p-5"><div><p className="font-semibold">{item.name}</p><p className="mt-1 text-sm text-zinc-500">{item.channel} · {item.note}</p></div><div className="text-right"><span className="text-xs text-zinc-500">{item.status}</span>{item.messageType && <p className={`mt-1 text-xs font-semibold ${item.messageType === "business" ? "text-green-700" : "text-zinc-400"}`}>{item.messageType === "business" ? "Business inquiry" : "Normal message"}</p>}</div></div>)}</div></PageFrame>;
 }
 
 function LeadsView({ workspace, userId, onSaved }: { workspace: WorkspaceData; userId?: string; onSaved: (value: WorkspaceData) => void }) {
@@ -157,7 +186,7 @@ function LeadsView({ workspace, userId, onSaved }: { workspace: WorkspaceData; u
 function KnowledgeView({ workspace, userId, onSaved }: { workspace: WorkspaceData; userId?: string; onSaved: (value: WorkspaceData) => void }) {
   const [content, setContent] = useState("");
   async function submit(event: FormEvent) { event.preventDefault(); if (!userId || !content) return; const next = { ...workspace, knowledge: [...workspace.knowledge, { id: `${Date.now()}`, label: "Business information", content }] }; await saveWorkspaceData(userId, next); onSaved(next); setContent(""); }
-  return <PageFrame title="Knowledge" description="Manage the facts and rules your AI employee can use in customer conversations."><form onSubmit={submit} className="mb-6 flex gap-3 border border-zinc-200 bg-white p-5"><textarea required value={content} onChange={(event) => setContent(event.target.value)} placeholder="Add a business fact, policy, product detail, or FAQ..." className="min-h-24 flex-1 resize-y border border-zinc-300 p-3" /><button className="self-end bg-zinc-950 px-4 py-3 text-sm font-semibold text-white">Save entry</button></form><div className="space-y-3">{workspace.knowledge.length === 0 ? <Empty title="Knowledge base is empty" text="Add your first business rule or train the AI employee." /> : workspace.knowledge.map((item) => <div key={item.id} className="border border-zinc-200 bg-white p-5 text-sm leading-6 text-zinc-700">{item.content}</div>)}</div></PageFrame>;
+  return <PageFrame title="Train Your AI" description="Add information about your business, products, services, availability, and pricing. The AI learns from this and uses it to respond to customer messages."><form onSubmit={submit} className="mb-6 flex gap-3 border border-zinc-200 bg-white p-5"><textarea required value={content} onChange={(event) => setContent(event.target.value)} placeholder="e.g., 'We offer 3 room types: Standard ($50/night), Deluxe ($75/night), Suite ($100/night). We're open year-round. Booking takes 2-3 hours.' Add product names, prices, policies, hours, FAQs..." className="min-h-24 flex-1 resize-y border border-zinc-300 p-3" /><button className="self-end bg-zinc-950 px-4 py-3 text-sm font-semibold text-white">Save</button></form><div className="space-y-3">{workspace.knowledge.length === 0 ? <Empty title="No business info yet" text="Start by adding details about what you sell, your availability, pricing, and policies. The AI will use this to respond to customer questions." /> : workspace.knowledge.map((item) => <div key={item.id} className="border border-zinc-200 bg-white p-5 text-sm leading-6 text-zinc-700">{item.content}</div>)}</div></PageFrame>;
 }
 
 function Empty({ title, text }: { title: string; text: string }) { return <div className="border border-dashed border-zinc-300 bg-white p-8"><h2 className="font-semibold">{title}</h2><p className="mt-2 text-sm text-zinc-500">{text}</p></div>; }
