@@ -114,14 +114,20 @@ function ChannelsView({ workspace, userId, onSaved }: { workspace: WorkspaceData
       await saveWorkspaceData(userId, clearedWorkspace);
       onSaved(clearedWorkspace);
       const result = await fetch("/api/whatsapp/connect", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ reset: true, knowledge: workspace.knowledge.map((item) => item.content) }) });
-      const data = await result.json();
-      if (!result.ok) throw new Error(data.error ?? "WhatsApp could not be started.");
+      const data = await result.json().catch(() => ({}));
+      if (!result.ok || data.status === "error") throw new Error(data.error ?? "WhatsApp could not be started.");
       await saveIncomingMessages(data.messages ?? []);
       setQrCode(data.qr ?? "");
       if (data.status === "connected") { await finishConnection(data); return; }
       pollRef.current = window.setInterval(async () => {
         const statusResult = await fetch("/api/whatsapp/connect");
-        const status = await statusResult.json();
+        const status = await statusResult.json().catch(() => ({}));
+        if (!statusResult.ok || status.status === "error") {
+          if (pollRef.current) window.clearInterval(pollRef.current);
+          setError(status.error ?? "WhatsApp worker is unavailable. Configure a persistent worker and try again.");
+          setIsConnecting(false);
+          return;
+        }
         await saveIncomingMessages(status.messages ?? []);
         if (status.qr) setQrCode(status.qr);
         if (status.status === "connected") {
