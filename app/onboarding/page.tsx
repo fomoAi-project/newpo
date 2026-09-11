@@ -70,7 +70,7 @@ export default function OnboardingPage() {
   return (
     <AuthGate>
       <WorkspaceShell>
-        <main className="min-h-screen bg-zinc-100 text-zinc-950">
+        <main className="min-h-screen bg-transparent text-zinc-950">
           <header className="border-b border-zinc-200 bg-white px-5 py-5 sm:px-8">
             <div className="mx-auto flex max-w-6xl items-center justify-between gap-5">
               <div>

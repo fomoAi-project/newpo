@@ -28,15 +28,15 @@ export default function DashboardPage() {
   return (
     <AuthGate>
     <WorkspaceShell>
-      <main className="min-h-screen bg-slate-950 text-slate-50">
-          <header className="flex flex-col gap-4 border-b border-white/10 bg-slate-950/60 px-5 py-5 sm:flex-row sm:items-center sm:justify-between lg:px-8">
+      <main className="min-h-screen bg-transparent text-zinc-950">
+          <header className="flex flex-col gap-4 border-b border-zinc-200/80 bg-white/80 backdrop-blur px-5 py-5 sm:flex-row sm:items-center sm:justify-between lg:px-8">
             <div>
-              <p className="text-sm text-slate-400">{business ? `Welcome back, ${business.ownerName}` : "Workspace setup"}</p>
-              <h1 className="text-2xl font-bold text-white">Overview</h1>
+              <p className="text-sm text-zinc-500">{business ? `Welcome back, ${business.ownerName}` : "Workspace setup"}</p>
+              <h1 className="text-2xl font-bold text-zinc-950">Overview</h1>
             </div>
             <div className="flex items-center gap-3">
-              <span className="rounded-full border border-white/15 px-3 py-1 text-sm text-slate-400">AI employee offline</span>
-              <Link href="/onboarding" className="rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950">Train AI employee</Link>
+              <span className="rounded-full border border-white/15 px-3 py-1 text-sm text-zinc-500">AI employee offline</span>
+              <Link href="/onboarding" className="rounded-full bg-[#635bff] px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-200">Train AI employee</Link>
             </div>
           </header>
 
@@ -46,7 +46,7 @@ export default function DashboardPage() {
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">Setup required</p>
                 <h2 className="mt-3 text-3xl font-semibold tracking-tight">Create your business workspace.</h2>
                 <p className="mt-3 max-w-xl text-zinc-600">Your workspace has no account or business data yet. Register to start training an AI employee.</p>
-                <Link href="/signup" className="mt-6 inline-flex rounded-full bg-black px-5 py-3 text-sm font-semibold text-white">Create account</Link>
+                <Link href="/signup" className="mt-6 inline-flex rounded-full bg-black px-5 py-3 text-sm font-semibold text-zinc-950">Create account</Link>
               </section>
             )}
 
@@ -57,10 +57,10 @@ export default function DashboardPage() {
                 { label: "Hot leads", value: hotLeads, detail: "ready for follow-up", href: "/dashboard/leads" },
                 { label: "Knowledge entries", value: workspace.knowledge.length, detail: "added by your team", href: "/dashboard/knowledge" },
               ].map((stat) => (
-                <Link key={stat.label} href={stat.href} className="border border-white/10 bg-slate-900 p-5 transition hover:border-zinc-400">
-                  <div className="text-sm text-slate-400">{stat.label}</div>
-                  <div className="mt-3 text-3xl font-bold text-white">{stat.value}</div>
-                  <div className="mt-1 text-xs text-slate-400">{stat.detail}</div>
+                <Link key={stat.label} href={stat.href} className="border border-zinc-200 bg-white shadow-sm p-5 transition hover:border-zinc-400">
+                  <div className="text-sm text-zinc-500">{stat.label}</div>
+                  <div className="mt-3 text-3xl font-bold text-zinc-950">{stat.value}</div>
+                  <div className="mt-1 text-xs text-zinc-500">{stat.detail}</div>
                 </Link>
               ))}
             </section>
@@ -74,10 +74,10 @@ export default function DashboardPage() {
               </WorkspacePanel>
             </section>
 
-            <section className="border border-dashed border-white/20 bg-slate-900/40 p-8">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Next step</p>
-              <h2 className="mt-3 text-2xl font-semibold text-white">Build the knowledge your AI employee can trust.</h2>
-              <p className="mt-3 max-w-2xl text-slate-400">Nothing is pre-filled. Add your own business information, products, policies, and customer rules to make this workspace useful.</p>
+            <section className="border border-dashed border-indigo-200 bg-indigo-50/70 p-8">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">Next step</p>
+              <h2 className="mt-3 text-2xl font-semibold text-zinc-950">Build the knowledge your AI employee can trust.</h2>
+              <p className="mt-3 max-w-2xl text-zinc-500">Nothing is pre-filled. Add your own business information, products, policies, and customer rules to make this workspace useful.</p>
               <Link href="/onboarding" className="mt-6 inline-flex rounded-full bg-emerald-500 px-5 py-3 text-sm font-semibold text-slate-950">Open AI training</Link>
             </section>
           </div>
@@ -88,13 +88,13 @@ export default function DashboardPage() {
 }
 
 function WorkspacePanel({ children, title, href, action }: { children: React.ReactNode; title: string; href: string; action: string }) {
-  return <section className="border border-white/10 bg-slate-900 p-6"><div className="mb-5 flex items-center justify-between"><h2 className="text-xl font-semibold text-white">{title}</h2><Link href={href} className="text-sm text-emerald-300">{action}</Link></div><div className="space-y-3">{children}</div></section>;
+  return <section className="border border-zinc-200 bg-white shadow-sm p-6"><div className="mb-5 flex items-center justify-between"><h2 className="text-xl font-semibold text-zinc-950">{title}</h2><Link href={href} className="text-sm text-emerald-300">{action}</Link></div><div className="space-y-3">{children}</div></section>;
 }
 
 function DataRow({ title, detail, badge }: { title: string; detail: string; badge?: string }) {
-  return <div className="flex items-center justify-between gap-4 border border-white/10 bg-slate-950 p-4"><div><div className="font-medium text-white">{title}</div><div className="mt-1 text-sm text-slate-400">{detail}</div></div>{badge && <span className="shrink-0 rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs text-emerald-300">{badge}</span>}</div>;
+  return <div className="flex items-center justify-between gap-4 border border-white/10 bg-zinc-50 p-4"><div><div className="font-medium text-zinc-950">{title}</div><div className="mt-1 text-sm text-zinc-500">{detail}</div></div>{badge && <span className="shrink-0 rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs text-emerald-300">{badge}</span>}</div>;
 }
 
 function EmptyState({ title, description, href, action }: { title: string; description: string; href: string; action: string }) {
-  return <div className="border border-dashed border-white/15 p-6"><h3 className="font-medium text-white">{title}</h3><p className="mt-2 text-sm leading-6 text-slate-400">{description}</p><Link href={href} className="mt-4 inline-flex text-sm font-semibold text-emerald-300">{action} →</Link></div>;
+  return <div className="border border-dashed border-white/15 p-6"><h3 className="font-medium text-zinc-950">{title}</h3><p className="mt-2 text-sm leading-6 text-zinc-500">{description}</p><Link href={href} className="mt-4 inline-flex text-sm font-semibold text-emerald-300">{action} →</Link></div>;
 }
