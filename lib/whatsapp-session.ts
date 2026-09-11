@@ -43,6 +43,13 @@ export async function startWhatsAppSession() {
 
   const session: WhatsAppSession = { sessionId: crypto.randomUUID(), status: "starting" };
   globalForWhatsApp.whatsappSession = session;
+
+  if (process.env.VERCEL && !process.env.WHATSAPP_WORKER_URL) {
+    session.status = "error";
+    session.error = "WhatsApp is not configured for this deployment. Set WHATSAPP_WORKER_URL to a persistent WhatsApp worker, then try again.";
+    return session;
+  }
+
   void connectWhatsApp(session);
   return session;
 }
