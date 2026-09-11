@@ -199,10 +199,22 @@ async function generateAndSendReply(session: WhatsAppSession, recipient: string 
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     const knowledge = session.trainingContext?.knowledge?.join("\n") || "We'll have the team follow up with you shortly.";
     const systemPrompt = `You are a WhatsApp assistant for ${session.trainingContext?.businessName ?? "this business"}. Answer customer messages based on the business info below. If asked about something you don't know, say the team will follow up. Be friendly, brief, and natural for WhatsApp.\n\nBusiness Info:\n${knowledge}`;
+    
+    const conversationHistory = (session.messages ?? [])
+      .filter((msg) => msg.sender === incoming.sender)
+      .sort((a, b) => a.receivedAt - b.receivedAt)
+      .slice(-10)
+      .flatMap((msg) => {
+        const userMessage = { role: "user" as const, content: msg.body };
+        const aiMessage = msg.aiReply ? { role: "assistant" as const, content: msg.aiReply } : null;
+        return aiMessage ? [userMessage, aiMessage] : [userMessage];
+      });
+    
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
         { role: "system", content: systemPrompt },
+        ...conversationHistory,
         { role: "user", content: incoming.body },
       ],
       max_tokens: 150,

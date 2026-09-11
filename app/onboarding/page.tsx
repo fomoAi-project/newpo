@@ -96,14 +96,14 @@ export default function OnboardingPage() {
 
               <div className="flex-1 space-y-5 overflow-y-auto bg-zinc-50 px-5 py-6 sm:px-8">
                 {messages.length === 0 && <div className="max-w-xl"><p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-400">Your first conversation</p><div className="rounded-2xl rounded-tl-sm border border-zinc-200 bg-white p-5 text-[15px] leading-7 text-zinc-700 shadow-sm">Hi, I&apos;m your new AI employee. I want to understand the business properly before I speak with customers. What does your business do, and who do you serve?</div></div>}
-                {messages.map((item, index) => <div key={`${item.sender}-${index}`} className={item.sender === "owner" ? "ml-auto max-w-xl" : "max-w-xl"}><p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-400">{item.sender === "owner" ? "You" : "AI employee"}</p><div className={item.sender === "owner" ? "training-owner-message rounded-2xl rounded-tr-sm bg-zinc-950 p-5 text-[15px] leading-7" : "rounded-2xl rounded-tl-sm border border-zinc-200 bg-white p-5 text-[15px] leading-7 text-zinc-700 shadow-sm"}>{item.body}</div></div>)}
+                {messages.map((item, index) => <div key={`${item.sender}-${index}`} className={item.sender === "owner" ? "ml-auto max-w-xl" : "max-w-xl"}><p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-400">{item.sender === "owner" ? "You" : "AI employee"}</p><div className={item.sender === "owner" ? "training-owner-message rounded-2xl text-white rounded-tr-sm bg-zinc-950 p-5 text-[15px] leading-7" : "rounded-2xl rounded-tl-sm border border-zinc-200 bg-white p-5 text-[15px] leading-7 text-zinc-700 shadow-sm"}>{item.body}</div></div>)}
               </div>
 
               <div className="border-t border-zinc-200 bg-white p-4 sm:p-5">
                 <form onSubmit={handleSubmit}>
                   <div className="flex items-end gap-3 rounded-2xl border border-zinc-300 bg-zinc-50 p-2 focus-within:border-zinc-950 focus-within:bg-white">
                     <textarea name="message" rows={2} value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Explain it naturally, like you are talking to a new employee..." className="min-h-12 flex-1 resize-none bg-transparent px-3 py-2 text-sm leading-6 text-zinc-950 outline-none placeholder:text-zinc-400" />
-                    <button type="submit" disabled={isSending || !message.trim()} className="training-send-button rounded-xl bg-zinc-950 px-4 py-3 text-sm font-semibold transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:bg-zinc-300">{isSending ? "Saving" : "Send"}</button>
+                    <button type="submit" disabled={isSending || !message.trim()} className="training-send-button text-white rounded-xl bg-zinc-950 px-4 py-3 text-sm font-semibold transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:bg-zinc-300">{isSending ? "Saving" : "Send"}</button>
                   </div>
                 </form>
                 {error && <p className="mt-2 px-2 text-sm text-red-600">{error}</p>}

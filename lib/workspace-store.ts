@@ -81,3 +81,24 @@ export async function appendTrainingMessages(userId: string, messages: Workspace
   const trainingMessages = [...current.trainingMessages, ...messages];
   await saveWorkspaceData(userId, { ...current, trainingMessages });
 }
+
+export async function deleteKnowledgeEntry(userId: string, knowledgeId: string) {
+  const current = await getWorkspaceData(userId);
+  await saveWorkspaceData(userId, { ...current, knowledge: current.knowledge.filter((item) => item.id !== knowledgeId) });
+}
+
+export async function getWhatsAppOwner(phoneNumber: string | undefined): Promise<string | null> {
+  if (!phoneNumber) return null;
+  const snapshot = await get(ref(database, `whatsapp-ownership/${phoneNumber}`));
+  return snapshot.exists() ? snapshot.val().userId : null;
+}
+
+export async function setWhatsAppOwner(phoneNumber: string | undefined, userId: string) {
+  if (!phoneNumber) return;
+  await set(ref(database, `whatsapp-ownership/${phoneNumber}`), { userId, connectedAt: Date.now() });
+}
+
+export async function clearWhatsAppOwner(phoneNumber: string | undefined) {
+  if (!phoneNumber) return;
+  await set(ref(database, `whatsapp-ownership/${phoneNumber}`), null);
+}
