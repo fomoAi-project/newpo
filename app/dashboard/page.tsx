@@ -28,8 +28,8 @@ export default function DashboardPage() {
   return (
     <AuthGate>
     <WorkspaceShell>
-      <main className="min-h-screen bg-slate-950 text-slate-50">
-          <header className="flex flex-col gap-4 border-b border-white/10 bg-slate-950/60 px-5 py-5 sm:flex-row sm:items-center sm:justify-between lg:px-8">
+      <main className="min-h-screen bg-[#f6f7fb] text-[#101828]">
+          <header className="flex flex-col gap-4 border-b border-[#e4e7ec] bg-white px-5 py-6 sm:flex-row sm:items-center sm:justify-between lg:px-10">
             <div>
               <p className="text-sm text-slate-400">{business ? `Welcome back, ${business.ownerName}` : "Workspace setup"}</p>
               <h1 className="text-2xl font-bold text-white">Overview</h1>
@@ -40,7 +40,7 @@ export default function DashboardPage() {
             </div>
           </header>
 
-          <div className="space-y-8 p-5 lg:p-8">
+          <div className="space-y-8 p-5 lg:p-10">
             {!business && (
               <section className="border border-dashed border-zinc-300 bg-white p-8 text-black">
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">Setup required</p>
@@ -57,7 +57,7 @@ export default function DashboardPage() {
                 { label: "Hot leads", value: hotLeads, detail: "ready for follow-up", href: "/dashboard/leads" },
                 { label: "Knowledge entries", value: workspace.knowledge.length, detail: "added by your team", href: "/dashboard/knowledge" },
               ].map((stat) => (
-                <Link key={stat.label} href={stat.href} className="border border-white/10 bg-slate-900 p-5 transition hover:border-zinc-400">
+                <Link key={stat.label} href={stat.href} className="rounded-2xl border border-[#e4e7ec] bg-white p-5 shadow-[0_10px_30px_rgba(16,24,40,.05)] transition hover:-translate-y-0.5 hover:border-[#3448d8]">
                   <div className="text-sm text-slate-400">{stat.label}</div>
                   <div className="mt-3 text-3xl font-bold text-white">{stat.value}</div>
                   <div className="mt-1 text-xs text-slate-400">{stat.detail}</div>
@@ -74,7 +74,7 @@ export default function DashboardPage() {
               </WorkspacePanel>
             </section>
 
-            <section className="border border-dashed border-white/20 bg-slate-900/40 p-8">
+            <section className="rounded-2xl border border-[#cfd5ff] bg-[#eef0ff] p-8">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Next step</p>
               <h2 className="mt-3 text-2xl font-semibold text-white">Build the knowledge your AI employee can trust.</h2>
               <p className="mt-3 max-w-2xl text-slate-400">Nothing is pre-filled. Add your own business information, products, policies, and customer rules to make this workspace useful.</p>
