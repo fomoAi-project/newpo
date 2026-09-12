@@ -1,310 +1,72 @@
 import Link from "next/link";
 
 const features = [
-  {
-    title: "AI employee onboarding",
-    description:
-      "Every business gets a trained AI employee that starts with zero knowledge and learns from the owner through conversation.",
-  },
-  {
-    title: "Knowledge-first answers",
-    description:
-      "The AI uses business facts, rules, FAQs, products, policies and uploaded documents to answer customers with grounded information.",
-  },
-  {
-    title: "Lead qualification",
-    description:
-      "It qualifies buyers, scores intent, captures data, identifies hot leads and hands serious opportunities to the team.",
-  },
-  {
-    title: "Human takeover",
-    description:
-      "Owners can take over conversations instantly when discounts, complaints, or sensitive issues require a human.",
-  },
-  {
-    title: "Multi-channel inbox",
-    description:
-      "A single inbox brings WhatsApp, website chat, Instagram and other channels into one operational view.",
-  },
-  {
-    title: "Usage-based billing",
-    description:
-      "Track AI requests, WhatsApp usage, storage, documents and automations with a subscription + usage model.",
-  },
+  ["01", "Teach it your business", "Give your AI employee the facts, policies, products, and tone that make your business different."],
+  ["02", "Turn questions into leads", "Qualify intent, capture details, and surface the conversations most likely to become revenue."],
+  ["03", "Keep humans in control", "Jump into any conversation instantly when context, empathy, or a final decision matters."],
 ];
 
-const steps = [
-  "Create business profile",
-  "Train AI employee with business info",
-  "Connect customer channels",
-  "Handle leads and appointments",
-];
-
-const pricing = [
-  {
-    name: "Free",
-    price: "₦0",
-    description: "For testing and early product feedback.",
-    features: ["AI training", "Limited conversations", "Basic knowledge base"],
-    highlight: false,
-  },
-  {
-    name: "Starter",
-    price: "₦25,000",
-    description: "Best for small businesses launching online.",
-    features: ["1 AI employee", "Website chat", "Lead capture", "Human takeover"],
-    highlight: true,
-  },
-  {
-    name: "Business",
-    price: "₦60,000",
-    description: "For growing teams handling WhatsApp and more.",
-    features: ["WhatsApp", "Multi-channel inbox", "Lead scoring", "Follow-ups"],
-    highlight: false,
-  },
-];
+const workflow = ["Create your workspace", "Train your AI employee", "Connect customer channels", "Grow with every conversation"];
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-50">
-      <header className="border-b border-white/10 bg-slate-950/80 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/15 text-lg font-bold text-emerald-300">
-              AI
-            </div>
-            <div>
-              <div className="text-lg font-semibold">AIBiz Employee</div>
-              <div className="text-xs text-slate-400">AI workforce for businesses</div>
-            </div>
-          </div>
-
-          <nav className="hidden items-center gap-8 text-sm text-slate-300 md:flex">
-            <a href="#platform" className="transition hover:text-white">Platform</a>
-            <a href="#workflow" className="transition hover:text-white">Workflow</a>
-            <a href="#pricing" className="transition hover:text-white">Pricing</a>
-            <a href="#roadmap" className="transition hover:text-white">Roadmap</a>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="rounded-full border border-white/15 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-emerald-400 hover:text-white"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/signup"
-              className="rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400"
-            >
-              Get started
-            </Link>
-          </div>
+    <main className="min-h-screen overflow-hidden bg-[#f5f7f4] text-[#13231f]">
+      <header className="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-6 py-6 lg:px-8">
+        <Link href="/" className="flex items-center gap-3" aria-label="AIBiz Employee home">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#173d32] text-sm font-black text-[#d7f36b]">AI</span>
+          <span className="text-lg font-bold tracking-tight">AIBiz Employee</span>
+        </Link>
+        <nav className="hidden items-center gap-8 text-sm font-medium text-[#53645e] md:flex">
+          <a href="#platform" className="hover:text-[#13231f]">Platform</a>
+          <a href="#workflow" className="hover:text-[#13231f]">How it works</a>
+          <a href="#pricing" className="hover:text-[#13231f]">Pricing</a>
+        </nav>
+        <div className="flex items-center gap-3">
+          <Link href="/login" className="hidden px-3 py-2 text-sm font-semibold md:block">Sign in</Link>
+          <Link href="/signup" className="rounded-full bg-[#173d32] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-[#173d32]/15 transition hover:-translate-y-0.5">Get started</Link>
         </div>
       </header>
 
-      <section className="mx-auto max-w-7xl px-6 pb-20 pt-16 lg:px-8 lg:pt-20">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.1fr,0.9fr]">
+      <section className="relative mx-auto max-w-7xl px-6 pb-24 pt-12 lg:px-8 lg:pb-32 lg:pt-20">
+        <div className="pointer-events-none absolute -right-40 -top-40 h-[520px] w-[520px] rounded-full bg-[#d7f36b]/50 blur-3xl" />
+        <div className="relative grid items-center gap-16 lg:grid-cols-[1fr_0.8fr]">
           <div>
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-sm font-medium text-emerald-300">
-              Multi-tenant AI employee platform
+            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#c7d1c8] bg-white/70 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-[#416058]">
+              <span className="h-2 w-2 rounded-full bg-[#9bc83d]" /> Built for the next kind of team
             </div>
-
-            <h1 className="max-w-xl text-5xl font-black leading-tight tracking-tight text-white lg:text-6xl">
-              Give every business its own AI employee.
-            </h1>
-
-            <p className="mt-6 max-w-xl text-lg leading-8 text-slate-300">
-              A SaaS platform where each business trains its own AI worker, answers customer questions using verified knowledge, qualifies leads, books appointments and escalates to a human when needed.
-            </p>
-
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <Link
-                href="/signup"
-                className="rounded-full bg-emerald-500 px-6 py-3 text-center text-sm font-semibold text-slate-950 transition hover:bg-emerald-400"
-              >
-                Open your workspace
-              </Link>
-              <a
-                href="#platform"
-                className="rounded-full border border-white/15 px-6 py-3 text-center text-sm font-semibold text-white transition hover:border-white/35 hover:bg-white/5"
-              >
-                Explore platform
-              </a>
+            <h1 className="max-w-3xl text-5xl font-black leading-[0.98] tracking-[-0.06em] text-[#173d32] sm:text-7xl lg:text-[6.3rem]">Your best employee never sleeps.</h1>
+            <p className="mt-8 max-w-xl text-lg leading-8 text-[#53645e]">AIBiz gives every business an AI employee that learns the way you work, handles customer conversations, and brings your team the opportunities that matter.</p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <Link href="/signup" className="rounded-full bg-[#173d32] px-7 py-4 text-center text-sm font-bold text-white transition hover:bg-[#245746]">Build your AI employee <span className="ml-2">→</span></Link>
+              <a href="#platform" className="rounded-full border border-[#bac8bd] bg-white/50 px-7 py-4 text-center text-sm font-bold text-[#173d32] transition hover:bg-white">See how it works</a>
             </div>
-
+            <p className="mt-5 text-xs font-medium text-[#71817a]">No credit card required · Start with one workspace</p>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-slate-900/80 p-5 shadow-2xl shadow-emerald-950/30">
-            <div className="rounded-2xl border border-emerald-500/20 bg-slate-950 p-4">
-              <div className="mb-4 flex items-center justify-between border-b border-white/10 pb-3">
-                <div>
-                  <div className="text-sm text-slate-400">New workspace</div>
-                  <div className="text-lg font-semibold text-white">Start with your knowledge</div>
-                </div>
-                <span className="rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-medium text-emerald-300">
-                  Ready
-                </span>
-              </div>
-
-              <div className="space-y-4 text-sm">
-                <div className="border border-dashed border-white/15 p-5 text-slate-400">
-                  Your AI employee begins with an empty knowledge base. Add your business facts, policies, products, and customer rules during setup.
-                </div>
-                <Link href="/signup" className="inline-flex rounded-full bg-emerald-500 px-4 py-2 font-semibold text-slate-950">
-                  Create workspace
-                </Link>
+          <div className="relative mx-auto w-full max-w-md">
+            <div className="absolute -left-8 top-16 z-10 rounded-2xl border border-[#d5e0d4] bg-white px-4 py-3 shadow-xl shadow-[#173d32]/10">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[#81918a]">Today</p><p className="mt-1 text-sm font-bold text-[#173d32]">24 leads qualified</p>
+            </div>
+            <div className="rotate-2 rounded-[2rem] bg-[#173d32] p-3 shadow-2xl shadow-[#173d32]/25">
+              <div className="rounded-[1.5rem] bg-[#f8fbf7] p-6">
+                <div className="flex items-center justify-between border-b border-[#dce6dc] pb-5"><div><p className="text-xs font-bold uppercase tracking-widest text-[#81918a]">AI employee</p><h2 className="mt-1 text-xl font-black text-[#173d32]">Maya is on it.</h2></div><span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#d7f36b] text-[#173d32]">✦</span></div>
+                <div className="mt-6 space-y-3"><div className="rounded-2xl rounded-tl-sm bg-[#e8f0e6] p-4 text-sm leading-6 text-[#315047]">Hi Daniel, thanks for reaching out. I can help you find the right plan for your team.</div><div className="ml-8 rounded-2xl rounded-tr-sm bg-[#173d32] p-4 text-sm leading-6 text-white">We need WhatsApp support for 5 people.</div><div className="rounded-2xl rounded-tl-sm bg-[#e8f0e6] p-4 text-sm leading-6 text-[#315047]">Perfect. The Business plan is a great fit. Want me to book a quick setup call?</div></div>
+                <div className="mt-5 flex items-center gap-2 border-t border-[#dce6dc] pt-4 text-xs font-semibold text-[#71817a]"><span className="h-2 w-2 rounded-full bg-[#9bc83d]" /> Responding in your brand voice</div>
               </div>
             </div>
+            <div className="absolute -bottom-7 -right-7 rounded-2xl border border-[#d5e0d4] bg-[#d7f36b] px-5 py-4 shadow-xl"><p className="text-[10px] font-bold uppercase tracking-widest text-[#48622f]">Human takeover</p><p className="mt-1 text-sm font-black text-[#173d32]">Always one click away</p></div>
           </div>
         </div>
       </section>
 
-      <section id="platform" className="border-t border-white/10 bg-slate-900/60">
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-          <div className="mb-10 max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-300">Platform features</p>
-            <h2 className="mt-4 text-3xl font-bold text-white md:text-4xl">Built for real business operations.</h2>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {features.map((feature) => (
-              <div key={feature.title} className="rounded-2xl border border-white/10 bg-slate-950/70 p-6">
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10 text-lg text-emerald-300">
-                  ✓
-                </div>
-                <h3 className="text-xl font-semibold text-white">{feature.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-300">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+      <section id="platform" className="bg-[#173d32] px-6 py-24 text-white lg:px-8 lg:py-32">
+        <div className="mx-auto max-w-7xl"><div className="max-w-2xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#d7f36b]">More than a chatbot</p><h2 className="mt-5 text-4xl font-black tracking-[-0.04em] md:text-6xl">Make the busy work feel invisible.</h2><p className="mt-6 text-lg leading-8 text-[#b6c9bd]">Your AI employee takes care of the repeatable work, so your team can focus on the relationships and decisions that move the business forward.</p></div><div className="mt-16 grid gap-px overflow-hidden rounded-3xl bg-[#47705e] md:grid-cols-3">{features.map(([number, title, description]) => <article key={number} className="bg-[#173d32] p-8 lg:p-10"><p className="text-sm font-bold text-[#d7f36b]">{number}</p><h3 className="mt-16 text-2xl font-bold">{title}</h3><p className="mt-4 leading-7 text-[#b6c9bd]">{description}</p></article>)}</div></div>
       </section>
 
-      <section id="workflow" className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div className="mb-10 max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-300">How it works</p>
-          <h2 className="mt-4 text-3xl font-bold text-white md:text-4xl">Train once. Serve customers all day.</h2>
-        </div>
+      <section id="workflow" className="mx-auto max-w-7xl px-6 py-24 lg:px-8 lg:py-32"><div className="grid gap-14 lg:grid-cols-[0.75fr_1.25fr]"><div><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#668071]">A simple start</p><h2 className="mt-5 text-4xl font-black tracking-[-0.04em] text-[#173d32] md:text-5xl">From blank page to business momentum.</h2></div><div className="divide-y divide-[#d4ded4]">{workflow.map((step, index) => <div key={step} className="flex items-center gap-6 py-6"><span className="text-sm font-bold text-[#91ad45]">0{index + 1}</span><span className="text-xl font-bold text-[#173d32]">{step}</span><span className="ml-auto text-2xl text-[#91ad45]">↗</span></div>)}</div></div></section>
 
-        <div className="grid gap-6 md:grid-cols-4">
-          {steps.map((step, index) => (
-            <div key={step} className="rounded-2xl border border-white/10 bg-slate-900 p-6">
-              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500 text-sm font-bold text-slate-950">
-                {index + 1}
-              </div>
-              <p className="text-lg font-semibold text-white">{step}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section id="roadmap" className="border-t border-white/10 bg-slate-900/70">
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-          <div className="mb-10 max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-300">Development roadmap</p>
-            <h2 className="mt-4 text-3xl font-bold text-white md:text-4xl">A focused MVP first, then expansion.</h2>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            <div className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 p-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-300">Stage 1</p>
-              <h3 className="mt-3 text-2xl font-bold text-white">MVP</h3>
-              <ul className="mt-5 space-y-2 text-sm text-slate-200">
-                <li>• Registration and onboarding</li>
-                <li>• AI training conversation</li>
-                <li>• Multi-tenant knowledge base</li>
-                <li>• Lead capture and takeover</li>
-              </ul>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-slate-950 p-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-300">Stage 2</p>
-              <h3 className="mt-3 text-2xl font-bold text-white">WhatsApp</h3>
-              <ul className="mt-5 space-y-2 text-sm text-slate-200">
-                <li>• Incoming message handling</li>
-                <li>• Human handoff and escalation</li>
-                <li>• Unified inbox</li>
-                <li>• Lead scoring and alerts</li>
-              </ul>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-slate-950 p-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-300">Stage 3</p>
-              <h3 className="mt-3 text-2xl font-bold text-white">Growth</h3>
-              <ul className="mt-5 space-y-2 text-sm text-slate-200">
-                <li>• Appointments and follow-ups</li>
-                <li>• Alerts and analytics</li>
-                <li>• Staff roles and billing</li>
-                <li>• Expansion to new channels</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="pricing" className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div className="mb-10 max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-300">Pricing</p>
-          <h2 className="mt-4 text-3xl font-bold text-white md:text-4xl">Simple plans for real businesses.</h2>
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-3">
-          {pricing.map((plan) => (
-            <div
-              key={plan.name}
-              className={`rounded-3xl border p-6 ${
-                plan.highlight
-                  ? "border-emerald-400 bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-900/30"
-                  : "border-white/10 bg-slate-950 text-white"
-              }`}
-            >
-              <p className={`text-sm font-semibold uppercase tracking-[0.2em] ${plan.highlight ? "text-slate-900/80" : "text-emerald-300"}`}>
-                {plan.name}
-              </p>
-              <div className="mt-6 flex items-end gap-2">
-                <span className="text-4xl font-black">{plan.price}</span>
-                <span className={`text-sm ${plan.highlight ? "text-slate-900/80" : "text-slate-400"}`}>/month</span>
-              </div>
-              <p className={`mt-4 text-sm ${plan.highlight ? "text-slate-900/80" : "text-slate-300"}`}>{plan.description}</p>
-
-              <ul className={`mt-6 space-y-3 text-sm ${plan.highlight ? "text-slate-900/80" : "text-slate-200"}`}>
-                {plan.features.map((item) => (
-                  <li key={item}>• {item}</li>
-                ))}
-              </ul>
-
-              <Link
-                href="/signup"
-                className={`mt-8 inline-flex w-full justify-center rounded-full px-4 py-3 text-sm font-semibold transition ${
-                  plan.highlight
-                    ? "bg-slate-950 text-white hover:bg-slate-900"
-                    : "bg-white/5 text-white hover:bg-white/10"
-                }`}
-              >
-                Choose plan
-              </Link>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-t border-white/10 bg-slate-950/60">
-        <div className="mx-auto max-w-5xl px-6 py-20 text-center lg:px-8">
-          <h2 className="text-3xl font-bold text-white md:text-5xl">Launch an AI employee for your business.</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-300">
-            Start with one niche, prove the workflow and grow into a complete AI workforce platform.
-          </p>
-          <div className="mt-8 flex justify-center gap-4">
-            <Link href="/signup" className="rounded-full bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400">
-              Create your account
-            </Link>
-            <a href="#pricing" className="rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:border-white/35 hover:bg-white/5">
-              View pricing
-            </a>
-          </div>
-        </div>
-      </section>
+      <section id="pricing" className="bg-[#d7f36b] px-6 py-20 lg:px-8"><div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 md:flex-row md:items-center"><div><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#536d34]">Start small. Grow smart.</p><h2 className="mt-4 text-4xl font-black tracking-[-0.04em] text-[#173d32] md:text-5xl">Your first AI employee starts free.</h2></div><Link href="/signup" className="rounded-full bg-[#173d32] px-7 py-4 text-sm font-bold text-white transition hover:bg-[#245746]">Create your workspace →</Link></div></section>
+      <footer className="flex flex-col justify-between gap-4 bg-[#f5f7f4] px-6 py-8 text-sm text-[#71817a] md:flex-row lg:px-8"><span className="font-bold text-[#173d32]">AIBiz Employee</span><span>AI workforce for businesses that want to move forward.</span></footer>
     </main>
   );
 }
