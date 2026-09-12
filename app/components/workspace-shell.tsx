@@ -32,7 +32,7 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="workspace-shell flex min-h-screen flex-col text-zinc-950 lg:flex-row">
-      <aside className="workspace-sidebar border-b border-zinc-800 p-4 lg:sticky lg:top-0 lg:h-screen lg:w-72 lg:shrink-0 lg:border-b-0 lg:p-5">
+      <aside className="workspace-sidebar border-b border-zinc-800 p-4 lg:sticky lg:top-0 lg:h-screen lg:w-72 lg:shrink-0 lg:border-b-0 lg:p-6">
         <div className="flex items-center justify-between gap-3 lg:mb-8">
           <Link href="/dashboard" className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-sm font-black text-zinc-950">AI</div>
