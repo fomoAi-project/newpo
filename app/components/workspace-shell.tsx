@@ -43,7 +43,7 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
           </Link>
           <button type="button" onClick={handleSignOut} className="text-xs font-medium text-zinc-500 hover:text-white lg:hidden">Exit</button>
         </div>
-        <div className="mb-4 hidden items-center gap-2 border-b border-zinc-800 pb-4 text-xs text-zinc-500 lg:flex"><span className="h-2 w-2 rounded-full bg-emerald-400" />Workspace live</div>
+        <div className="mb-5 hidden items-center justify-between border-b border-white/10 pb-5 text-[11px] font-bold uppercase tracking-[0.16em] text-[#a9b7ad] lg:flex"><span>Workspace</span><span className="flex items-center gap-2 normal-case tracking-normal"><span className="h-2 w-2 rounded-full bg-[#d7f36b]" />Live</span></div>
         <nav className="mt-5 flex gap-1 overflow-x-auto pb-1 lg:mt-0 lg:block lg:space-y-1 lg:overflow-visible">
           {navigation.map((item) => {
             const isActive = item.href === "/dashboard" ? pathname === item.href : pathname.startsWith(item.href);
