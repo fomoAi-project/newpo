@@ -39,33 +39,35 @@ button, input, textarea {
   font: inherit;
 }
 
-.workspace-shell { background: #f6f7fb; }
-
-.workspace-sidebar {
-  background: #101828;
-  color: #eef2ff;
-  border-color: rgba(255,255,255,.08);
-}
-
-.workspace-sidebar a { color: #98a2b3; border-radius: 12px; }
-.workspace-sidebar a:hover { color: #fff; background: rgba(255,255,255,.08); }
-.workspace-sidebar .workspace-nav-active { color: #fff !important; background: #3448d8; box-shadow: 0 8px 20px rgba(52,72,216,.25); }
-.workspace-main { background: #f6f7fb; }
-.workspace-content { background: #f6f7fb; }
-.workspace-panel { border: 1px solid #e4e7ec; background: #fff; box-shadow: 0 10px 30px rgba(16,24,40,.06); border-radius: 18px; }
-.workspace-content .border-zinc-200.bg-white { border-color: #e4e7ec; box-shadow: 0 10px 30px rgba(16,24,40,.06); border-radius: 18px; }
-.workspace-content input, .workspace-content textarea { background: #fff; border-color: #d0d5dd; border-radius: 10px; }
-.workspace-content input:focus, .workspace-content textarea:focus { border-color: #3448d8; box-shadow: 0 0 0 3px rgba(52,72,216,.12); }
-.workspace-kicker { color: #667085; letter-spacing: .16em; }
-
-.workspace-content main { color: #101828; }
-.workspace-content main > div > div:first-child { border-color: #e4e7ec; }
-.workspace-content button.bg-black, .workspace-content a.bg-black { background: #3448d8; border-radius: 10px; }
-.workspace-content button.bg-black:hover, .workspace-content a.bg-black:hover { background: #2938b7; }
-.workspace-content .border-black { border-color: #e4e7ec; border-radius: 18px; }
-.workspace-content .text-gray-600 { color: #667085; }
-.workspace-content .text-black { color: #101828; }
+.workspace-shell { background: #f3f6fb; }
+.workspace-sidebar { background: #0b1220; color: #dbeafe; border-color: rgba(255,255,255,.08); }
+.workspace-sidebar a { color: #8fa1b8; border-radius: 10px; }
+.workspace-sidebar a:hover { color: #fff; background: rgba(255,255,255,.07); }
+.workspace-sidebar .workspace-nav-active { color: #fff !important; background: linear-gradient(135deg,#4763ff,#6d5dfc); box-shadow: 0 8px 24px rgba(71,99,255,.28); }
+.workspace-main, .workspace-content { background: #f3f6fb; }
+.workspace-panel, .workspace-content .border-zinc-200.bg-white { border: 1px solid #e3eaf4; background: #fff; box-shadow: 0 12px 32px rgba(31,50,81,.06); border-radius: 16px; }
+.workspace-content input, .workspace-content textarea, .workspace-content select { background: #fff; border-color: #d8e1ed; border-radius: 10px; color: #172033; }
+.workspace-content input:focus, .workspace-content textarea:focus, .workspace-content select:focus { border-color: #4763ff; box-shadow: 0 0 0 3px rgba(71,99,255,.12); }
+.workspace-kicker { color: #66758c; letter-spacing: .16em; }
+.workspace-content main { color: #172033; }
+.workspace-content main > div > div:first-child { border-color: #e3eaf4; }
+.workspace-content button.bg-black, .workspace-content a.bg-black { background: #4763ff; border-radius: 10px; }
+.workspace-content button.bg-black:hover, .workspace-content a.bg-black:hover { background: #354bd0; }
+.workspace-content .border-black { border-color: #e3eaf4; border-radius: 16px; }
+.workspace-content .text-gray-600 { color: #66758c; }
+.workspace-content .text-black { color: #172033; }
 .workspace-content .bg-white { background: #fff; }
+
+.auth-surface { background: radial-gradient(circle at top left, #1b2c58 0, #0b1220 44%, #060a12 100%); }
+.auth-card { border: 1px solid rgba(255,255,255,.12); background: rgba(17,27,46,.86); box-shadow: 0 24px 80px rgba(0,0,0,.35); backdrop-filter: blur(18px); }
+.auth-card input, .auth-card select { border-color: rgba(255,255,255,.12) !important; background: rgba(3,8,18,.72) !important; color: #fff; }
+.auth-card input:focus, .auth-card select:focus { border-color: #6d7cff !important; box-shadow: 0 0 0 3px rgba(109,124,255,.16) !important; }
+.auth-input { border-color: rgba(255,255,255,.12) !important; background: rgba(3,8,18,.72) !important; }
+.auth-input:focus { border-color: #6d7cff !important; box-shadow: 0 0 0 3px rgba(109,124,255,.16) !important; }
+
+@media (max-width: 1023px) { .workspace-sidebar nav { scrollbar-width: none; } .workspace-sidebar nav::-webkit-scrollbar { display: none; } }
+
+@media (max-width: 640px) { .workspace-content main { padding-left: 1rem; padding-right: 1rem; } }
 
 @media (max-width: 1023px) {
   .workspace-sidebar nav { scrollbar-width: none; }

@@ -45,8 +45,8 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-950 px-6 py-12 text-slate-50">
-      <div className="w-full max-w-xl rounded-3xl border border-white/10 bg-slate-900 p-8 shadow-2xl shadow-emerald-950/30">
+    <main className="auth-surface flex min-h-screen items-center justify-center px-6 py-12 text-slate-50">
+      <div className="auth-card w-full max-w-xl rounded-3xl p-8 sm:p-10">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/15 text-2xl font-bold text-emerald-300">
             AI
